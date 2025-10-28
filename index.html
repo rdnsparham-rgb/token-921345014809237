@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>چت‌بات HTML مستقل</title>
+<style>
+body { font-family: sans-serif; background:#f4f4f4; text-align:center; padding:30px; }
+textarea { width:90%; height:100px; padding:10px; font-size:16px; border-radius:10px; border:1px solid #aaa; resize:none; }
+button { margin-top:10px; padding:10px 20px; border:none; background:#007bff; color:white; border-radius:8px; cursor:pointer; }
+#reply { margin-top:20px; background:white; padding:15px; border-radius:10px; max-width:90%; display:inline-block; text-align:right; direction:rtl; word-wrap:break-word; }
+</style>
+</head>
+<body>
+<h2>چت‌بات HTML مستقل 🤖</h2>
+<textarea id="msg" placeholder="پیام خود را بنویسید..."></textarea><br>
+<button onclick="sendMessage()">ارسال</button>
+<div id="reply"></div>
+
+<script>
+const API_KEY = "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"; // ← اینجا توکن خودت رو بذار
+
+async function sendMessage() {
+  const msg = document.getElementById("msg").value;
+  document.getElementById("reply").innerText = "در حال ارسال...";
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + API_KEY
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: msg }]
+      })
+    });
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content || "هیچ پاسخی نیومد 😐";
+    document.getElementById("reply").innerText = reply;
+  } catch(e) {
+    document.getElementById("reply").innerText = "خطا در ارتباط با API";
+  }
+}
+</script>
+</body>
+</html>
